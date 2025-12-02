@@ -1,0 +1,819 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/solarized.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+		<style>
+		#ror_ditz{
+			font-size: 75%;
+		}	
+		h3{
+			color: rgba(102, 47, 220, 0.782) !important;
+			border: 1px dotted rgba(139, 28, 203, 0.759);
+			padding: 5px;
+			background-color: rgb(244, 229, 255);
+			border-radius: 10px;
+		}
+		.no-wrap {
+			white-space: nowrap;
+			word-break: keep-all;
+		}
+		</style>
+		
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section class="center">
+					<h1>Математическая <br> логика и теория <br> алгоритмов</h1>
+				</section>
+				<section class="center">
+					<h2>Определения</h2>
+				</section>
+				<section data-markdown="markdown/logika.md"></section>
+				<section class="center">
+					<h2>Логические операции в классической логике</h2>
+				</section>
+				<section data-markdown="markdown/konukcia.md"></section>
+				<section data-markdown="markdown/dizunkcia.md"></section>
+				<section data-markdown="markdown/inversia.md"></section>
+				<section data-markdown="markdown/implikacia.md"></section>
+				<section data-markdown="markdown/ekvivalencia.md"></section>
+				<section data-markdown="markdown/ili.md"></section>
+				<section data-markdown="markdown/ifdiz.md"></section>
+				<section data-markdown="markdown/pirs.md"></section>
+				<section data-markdown="markdown/sheffer.md"></section>
+
+				<section class="center">
+					<h2>Таблицы инстинности</h2>
+				</section>
+				<section data-markdown="markdown/tableist.md"></section>
+				<section class="center">
+					<h2>Программа, генерирующая таблицы инстинности</h2>
+				</section>
+				<section data-markdown="markdown/gentab.md"></section>
+				
+
+
+				<section>
+    <h3>Генератор таблиц истинности</h3>
+    <div style="text-align: center;">
+        <select id="logicOp" style="padding: 8px; margin: 8px; font-size: 16px;">
+            <option value="AND">AND (∧)</option>
+            <option value="OR">OR (∨)</option>
+            <option value="NOT">NOT (¬)</option>
+            <option value="IMPLY">IMPLY (→)</option>
+            <option value="EQUIV">EQUIV (↔)</option>
+            <option value="XOR">XOR (⊕)</option>
+            <option value="NOR">NOR (↓)</option>
+            <option value="NAND">NAND (|)</option>
+        </select>
+        <button onclick="generateTruthTable()" style="padding: 8px 16px; font-size: 16px; color: #8d34db;">
+            Показать таблицу
+        </button>
+    </div>
+    
+    <div id="tableContainer"  style="font-size: 16px; margin-top: 15px;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+    <script>
+        function generateTruthTable() {
+            const op = document.getElementById('logicOp').value;
+            const ops = {
+                AND: (a,b) => a && b, 
+                OR: (a,b) => a || b, 
+                NOT: (a) => !a,
+                IMPLY: (a,b) => !a || b, 
+                EQUIV: (a,b) => a === b, 
+                XOR: (a,b) => a !== b, 
+                NOR: (a,b) => !(a || b), 
+                NAND: (a,b) => !(a && b)
+            };
+            
+            const katexSymbols = {
+                'AND': 'A \\land B',
+                'OR': 'A \\lor B', 
+                'NOT': '\\neg A',
+                'IMPLY': 'A \\rightarrow B',
+                'EQUIV': 'A \\leftrightarrow B',
+                'XOR': 'A \\oplus B',
+                'NOR': 'A \\downarrow B',
+                'NAND': 'A \\mid B'
+            };
+
+            console.log(`=== Таблица истинности для ${op} ===`);
+            
+            let html = '<table style="border-collapse: collapse; width: 70%; margin: 0 auto; font-size: 18px;">';
+            
+            if (op === 'NOT') {
+                html += `<tr>
+                    <th style="border: 2px solid; padding: 8px; background: #34495e; color: white;">A</th>
+                    <th style="border: 2px solid; padding: 8px; background: #34495e; color: white;">${katex.renderToString(katexSymbols[op])}</th>
+                </tr>`;
+                
+                [false, true].forEach(a => {
+                    const res = ops[op](a);
+                    console.log(`A = ${a} -> ${katexSymbols[op]} = ${res}`);
+                    html += `<tr>
+                        <td style="border: 1px solid; padding: 8px;">${a ? '1 (И)' : '0 (Л)'}</td>
+                        <td style="border: 1px solid; padding: 8px;">${res ? '1 (И)' : '0 (Л)'}</td>
+                    </tr>`;
+                });
+            } else {
+                html += `<tr>
+                    <th style="border: 2px solid; padding: 8px; background: #6034db; color: white;">A</th>
+                    <th style="border: 2px solid; padding: 8px; background: #6034db; color: white;">B</th>
+                    <th style="border: 2px solid; padding: 8px; background: #6034db; color: white;">${katex.renderToString(katexSymbols[op])}</th>
+                </tr>`;
+                
+                [false, true].forEach(a => {
+                    [false, true].forEach(b => {
+                        const res = ops[op](a, b);
+                        console.log(`A = ${a}, B = ${b} -> ${katexSymbols[op]} = ${res}`);
+                        html += `<tr>
+                            <td style="border: 1px solid; padding: 8px;">${a ? '1 (И)' : '0 (Л)'}</td>
+                            <td style="border: 1px solid; padding: 8px;">${b ? '1 (И)' : '0 (Л)'}</td>
+                            <td style="border: 1px solid; padding: 8px;">${res ? '1 (И)' : '0 (Л)'}</td>
+                        </tr>`;
+                    });
+                });
+            }
+            
+            html += '</table>';
+            document.getElementById('tableContainer').innerHTML = html;
+        }
+        
+        // Сгенерировать таблицу при загрузке
+        generateTruthTable();
+    </script>
+</section>
+<section class="center">
+					<h2>Примеры высказываний</h2>
+				</section>
+<section data-markdown="markdown/skaz.md"></section>
+<section data-markdown="markdown/skazprost.md"></section>
+<section data-markdown="markdown/skazslozh.md"></section>
+
+<section class="center">
+					<h2>Понятие алгоритма</h2>
+				</section>
+				<section data-markdown="markdown/algoritm.md"></section>
+				<section data-markdown="markdown/slozhalg.md"></section>
+				<section>
+				<section data-markdown id="algsort1">
+					
+					<script type="text/template">
+						### Алгоритмы сортировок
+						
+- Простые алгоритмы
+   - <span style="font-size: 0.8em">Сортировка пузырьком (Bubble sort): Сравнивает соседние элементы и меняет их местами, 
+	если они в неправильном порядке. Повторяет этот процесс до тех пор, пока массив не будет отсортирован.</span>
+   - <span style="font-size: 0.8em">Сортировка вставками (Insertion sort): Принимает каждый элемент и вставляет 
+	его в отсортированную часть массива в правильное место.</span>
+   - <span style="font-size: 0.8em">Сортировка выбором (Selection sort): На каждом шаге находит минимальный элемент 
+	в несортированной части массива и помещает его в начало. </span>
+
+					</script>
+				</section>
+				<section data-markdown id="algsort2">
+					<script type="text/template">
+					### Алгоритмы сортировок 
+- Эффективные алгоритмы
+   - Быстрая сортировка (Quick sort): Один из самых быстрых алгоритмов; делит массив на две части относительно опорного элемента.
+   - Сортировка слиянием (Merge sort): Рекурсивно делит массив на части, сортирует их, а затем объединяет.
+   - Пирамидальная сортировка (Heap sort): Использует структуру данных «пирамида» для эффективной сортировки. 
+					</script>
+				</section>
+				</section>
+
+				<section>
+    <h3>Визуализация алгоритмов сортировки</h3>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+        <div style="margin: 10px 0;">
+            <button onclick="generateRandomArray()" style="padding: 8px 15px; font-size: 14px; background: #a148ce; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px;">
+                 Сгенерировать случайный массив
+            </button>
+            <input type="number" id="arraySize" placeholder="Размер" value="10" style="padding: 6px; margin: 5px; font-size: 14px; width: 80px;">
+            <input type="number" id="maxValue" placeholder="Макс. значение" value="100" style="padding: 6px; margin: 5px; font-size: 14px; width: 120px;">
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <input type="text" id="arrayInput" placeholder="Или введите числа через запятую" 
+                   style="padding: 8px; margin: 5px; font-size: 14px; width: 300px;"
+                   value="64,34,25,12,22,11,90,5,77,30">
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <select id="sortMethod" style="padding: 8px; margin: 5px; font-size: 14px; width: 200px;">
+                <option value="insertionSort">Сортировка вставками</option>
+                <option value="bubbleSort">Пузырьковая сортировка</option>
+                <option value="selectionSort">Сортировка выбором</option>
+                <option value="quickSort">Быстрая сортировка</option>
+                <option value="mergeSort">Сортировка слиянием</option>
+            </select>
+        </div>
+        
+        <button onclick="performSort()" style="padding: 10px 20px; font-size: 16px; background: #694cb6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+             Выполнить сортировку
+        </button>
+    </div>
+
+    <div id="sortResult" style="font-size: 14px; margin-top: 15px; text-align: center;"></div>
+
+    <script>
+        function generateRandomArray() {
+            const size = parseInt(document.getElementById('arraySize').value) || 10;
+            const maxVal = parseInt(document.getElementById('maxValue').value) || 100;
+            const randomArray = Array.from({length: size}, () => Math.floor(Math.random() * maxVal));
+            document.getElementById('arrayInput').value = randomArray.join(',');
+        }
+
+        function performSort() {
+            const input = document.getElementById('arrayInput').value;
+            const method = document.getElementById('sortMethod').value;
+            const originalArray = input.split(',').map(Number).filter(n => !isNaN(n));
+            
+            if (originalArray.length === 0) {
+                alert('Введите корректные числа!');
+                return;
+            }
+
+            console.log(`=== ${getAlgorithmName(method)} ===`);
+            console.log('Исходный массив:', originalArray);
+
+            // Точное измерение времени
+            const startTime = performance.now();
+            const sortedArray = sortingMethods[method](originalArray);
+            const endTime = performance.now();
+            const executionTime = endTime - startTime;
+
+            console.log('Результат:', sortedArray);
+            console.log(`Время выполнения: ${executionTime} мс`);
+
+            const color = getAlgorithmColor(method);
+
+            const html = `
+                <div style="border: 2px solid #694cb6; border-radius: 10px; padding: 15px; margin: 15px auto; max-width: 700px; background: white;">
+                    <h4 style="color: #694cb6; margin: 0 0 10px 0;">${getAlgorithmName(method)}</h4>
+                    
+                    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-weight: bold; color: #694cb6;">Исходный массив:</div>
+                            <div style="font-size: 14px; font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                                [${originalArray.join(', ')}]
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-weight: bold; color: #694cb6;">Результат:</div>
+                            <div style="font-size: 14px; font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                                [${sortedArray.join(', ')}]
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 10px; padding: 8px; background: pink; color: #694cb6; border-radius: 4px;">
+                        <div style="font-size: 12px;">Время выполнения:</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #694cb6;">
+                            ${executionTime.toFixed(3)} мс
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 8px; font-size: 12px; color: #7f8c8d;">
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('sortResult').innerHTML = html;
+        }
+
+        function getAlgorithmName(method) {
+            const names = {
+                'insertionSort': 'Сортировка вставками',
+                'bubbleSort': 'Пузырьковая сортировка', 
+                'selectionSort': 'Сортировка выбором',
+                'quickSort': 'Быстрая сортировка',
+                'mergeSort': 'Сортировка слиянием'
+            };
+            return names[method];
+        }
+
+        function getAlgorithmColor(method) {
+            const colors = {
+                'insertionSort': '#3498db',
+                'bubbleSort': '#2ecc71', 
+                'selectionSort': '#e67e22',
+                'quickSort': '#9b59b6',
+                'mergeSort': '#e74c3c'
+            };
+            return colors[method];
+        }
+
+        // Объект с методами сортировки
+        const sortingMethods = {
+            insertionSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало сортировки вставками');
+                for (let i = 1; i < array.length; i++) {
+                    let current = array[i];
+                    let j = i - 1;
+                    while (j >= 0 && array[j] > current) {
+                        array[j + 1] = array[j];
+                        j--;
+                    }
+                    array[j + 1] = current;
+                }
+                return array;
+            },
+
+            bubbleSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало пузырьковой сортировки');
+                for (let i = 0; i < array.length; i++) {
+                    for (let j = 0; j < array.length - i - 1; j++) {
+                        if (array[j] > array[j + 1]) {
+                            [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                        }
+                    }
+                }
+                return array;
+            },
+
+            selectionSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало сортировки выбором');
+                for (let i = 0; i < array.length; i++) {
+                    let minIndex = i;
+                    for (let j = i + 1; j < array.length; j++) {
+                        if (array[j] < array[minIndex]) {
+                            minIndex = j;
+                        }
+                    }
+                    [array[i], array[minIndex]] = [array[minIndex], array[i]];
+                }
+                return array;
+            },
+
+            quickSort: function(arr) {
+                if (arr.length <= 1) return arr;
+                const pivot = arr[Math.floor(arr.length / 2)];
+                const left = arr.filter(x => x < pivot);
+                const right = arr.filter(x => x > pivot);
+                const equal = arr.filter(x => x === pivot);
+                return [...this.quickSort(left), ...equal, ...this.quickSort(right)];
+            },
+
+            mergeSort: function(arr) {
+                if (arr.length <= 1) return arr;
+                const mid = Math.floor(arr.length / 2);
+                const left = this.mergeSort(arr.slice(0, mid));
+                const right = this.mergeSort(arr.slice(mid));
+                return this.merge(left, right);
+            },
+
+            merge: function(left, right) {
+                const result = [];
+                while (left.length && right.length) {
+                    result.push(left[0] < right[0] ? left.shift() : right.shift());
+                }
+                return [...result, ...left, ...right];
+            }
+        };
+
+        // Автогенерация при загрузке
+        window.onload = generateRandomArray;
+    </script>
+</section>
+
+<section>
+    <h3>Сравнение производительности алгоритмов сортировки</h3>
+    
+    <div style="text-align: center; margin: 15px 0;">
+        <button onclick="runPerformanceTest()" style="padding: 10px 20px; font-size: 16px; background: #ae3ce7; color: white; border: none; border-radius: 5px; cursor: pointer;">
+             Запустить тест производительности (100 итераций)
+        </button>
+    </div>
+
+    <div id="performanceResults" style="font-size: 14px; margin-top: 15px;"></div>
+
+    <script>
+        function runPerformanceTest() {
+            const arraySize = 100;
+            const maxValue = 1000;
+            const iterations = 100;
+            
+            const testArray = Array.from({length: arraySize}, () => Math.floor(Math.random() * maxValue));
+            
+            console.log("=== ТЕСТ ПРОИЗВОДИТЕЛЬНОСТИ АЛГОРИТМОВ СОРТИРОВКИ ===");
+            console.log(`Размер массива: ${arraySize} элементов`);
+            console.log(`Количество итераций: ${iterations}`);
+            console.log("Сгенерированный массив:", testArray);
+
+            const results = {};
+            const algorithms = ['insertionSort', 'bubbleSort', 'selectionSort', 'quickSort', 'mergeSort'];
+
+            algorithms.forEach(algorithm => {
+                console.log(`\n--- ${getAlgorithmName(algorithm)} ---`);
+                let totalTime = 0;
+                
+                for (let i = 0; i < iterations; i++) {
+                    const arrCopy = [...testArray];
+                    const startTime = performance.now();
+                    sortingMethods[algorithm](arrCopy);
+                    const endTime = performance.now();
+                    const executionTime = endTime - startTime;
+                    totalTime += executionTime;
+                    
+                    console.log(`Итерация ${i + 1}: ${executionTime.toFixed(3)} мс`);
+                }
+                
+                const averageTime = totalTime / iterations;
+                results[algorithm] = averageTime;
+                console.log(`СРЕДНЕЕ ВРЕМЯ: ${averageTime.toFixed(3)} мс`);
+            });
+
+            const sortedResults = Object.entries(results).sort((a, b) => a[1] - b[1]);
+
+            let html = `
+                <div style="border: 2px solid #694cb6; border-radius: 10px; padding: 15px; margin: 15px auto; max-width: 500px; background: white;">
+                    <h4 style="color: #694cb6; margin-top: 0;">Среднее время выполнения (${iterations} итераций)</h4>
+                    <dl style="font-size: 16px; line-height: 1.5;">
+            `;
+
+            sortedResults.forEach(([algorithm, time]) => {
+                html += `
+                    <dt style="font-weight: bold; color: #694cb6; margin-top: 8px;">${getAlgorithmName(algorithm)}</dt>
+                    <dd style="margin-left: 20px; color: #694cb6;">${time.toFixed(3)} мс</dd>
+                `;
+            });
+
+            html += `
+                    </dl>
+                    <div style="margin-top: 10px; font-size: 12px; color: #694cb6;">
+                        Размер массива: ${arraySize} элементов<br>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('performanceResults').innerHTML = html;
+        }
+
+        function getAlgorithmName(method) {
+            const names = {
+                'insertionSort': 'Сортировка вставками',
+                'bubbleSort': 'Пузырьковая сортировка', 
+                'selectionSort': 'Сортировка выбором',
+                'quickSort': 'Быстрая сортировка',
+                'mergeSort': 'Сортировка слиянием'
+            };
+            return names[method];
+        }
+    </script>
+</section>
+
+<section>
+				<section class="slide">
+    <h3>Код таблиц истинности</h3>
+    
+    <pre><code class="language-html">
+&lt;select id="logicOp"&gt;
+  &lt;option value="AND"&gt;AND&lt;/option&gt;
+  &lt;option value="OR"&gt;OR&lt;/option&gt;
+  &lt;option value="NOT"&gt;NOT&lt;/option&gt;
+  &lt;option value="IMPLY"&gt;IMPLY&lt;/option&gt;
+  &lt;option value="EQUIV"&gt;EQUIV&lt;/option&gt;
+  &lt;option value="XOR"&gt;XOR&lt;/option&gt;
+  &lt;option value="NOR"&gt;NOR&lt;/option&gt;
+  &lt;option value="NAND"&gt;NAND&lt;/option&gt;
+&lt;/select&gt;
+&lt;button onclick="generateTruthTable()"&gt;Показать таблицу&lt;/button&gt;
+&lt;div id="tableContainer"&gt;&lt;/div&gt;
+    </code></pre>
+	</section>
+
+				<section class="slide">
+
+    <pre><code class="language-javascript">
+function generateTruthTable() {
+  const op = document.getElementById('logicOp').value;
+  const ops = {
+    AND: (a,b) => a && b,
+    OR: (a,b) => a || b,
+    NOT: (a) => !a,
+    IMPLY: (a,b) => !a || b,
+    EQUIV: (a,b) => a === b,
+    XOR: (a,b) => a !== b,
+    NOR: (a,b) => !(a || b),
+    NAND: (a,b) => !(a && b)
+  };
+  
+  let html = '&lt;table&gt;';
+  if (op === 'NOT') {
+    html += '&lt;tr&gt;&lt;th&gt;A&lt;/th&gt;&lt;th&gt;NOT A&lt;/th&gt;&lt;/tr&gt;';
+    [false, true].forEach(a => {
+      const res = ops[op](a);
+      html += `&lt;tr&gt;&lt;td&gt;${a}&lt;/td&gt;&lt;td&gt;${res}&lt;/td&gt;&lt;/tr&gt;`;
+    });
+  } else {
+    html += `&lt;tr&gt;&lt;th&gt;A&lt;/th&gt;&lt;th&gt;B&lt;/th&gt;&lt;th&gt;A ${op} B&lt;/th&gt;&lt;/tr&gt;`;
+    [false, true].forEach(a => {
+      [false, true].forEach(b => {
+        const res = ops[op](a, b);
+        html += `&lt;tr&gt;&lt;td&gt;${a}&lt;/td&gt;&lt;td&gt;${b}&lt;/td&gt;&lt;td&gt;${res}&lt;/td&gt;&lt;/tr&gt;`;
+      });
+    });
+  }
+  html += '&lt;/table&gt;';
+  document.getElementById('tableContainer').innerHTML = html;
+}
+    </code></pre>
+</section>
+				
+			</section>
+
+	<section>
+				<section class="slide">
+    <h3>Код программ сортировок</h3>
+    
+    <pre><code class="language-html">
+<div style="text-align: center; margin-bottom: 20px;">
+        <div style="margin: 10px 0;">
+            <button onclick="generateRandomArray()" style="padding: 8px 15px; font-size: 14px; background: #9248ec; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px;">
+                Сгенерировать случайный массив
+            </button>
+            <input type="number" id="arraySize" placeholder="Размер" value="10" style="padding: 6px; margin: 5px; font-size: 14px; width: 80px;">
+            <input type="number" id="maxValue" placeholder="Макс. значение" value="100" style="padding: 6px; margin: 5px; font-size: 14px; width: 120px;">
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <input type="text" id="arrayInput" placeholder="Или введите числа через запятую" 
+                   style="padding: 8px; margin: 5px; font-size: 14px; width: 300px;"
+                   value="64,34,25,12,22,11,90,5,77,30">
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <select id="sortMethod" style="padding: 8px; margin: 5px; font-size: 14px; width: 200px;">
+                <option value="insertionSort">Сортировка вставками</option>
+                <option value="bubbleSort">Пузырьковая сортировка</option>
+                <option value="selectionSort">Сортировка выбором</option>
+                <option value="quickSort">Быстрая сортировка</option>
+                <option value="mergeSort">Сортировка слиянием</option>
+            </select>
+        </div>
+        
+        <button onclick="performSort()" style="padding: 10px 20px; font-size: 16px; background: #9e34db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+             Выполнить сортировку
+        </button>
+    </div>
+
+    <div id="sortResult" style="font-size: 14px; margin-top: 15px; text-align: center;"></div>
+    </code></pre>
+	</section>
+
+				<section class="slide">
+
+    <pre><code class="language-javascript">
+function generateRandomArray() {
+            const size = parseInt(document.getElementById('arraySize').value) || 10;
+            const maxVal = parseInt(document.getElementById('maxValue').value) || 100;
+            const randomArray = Array.from({length: size}, () => Math.floor(Math.random() * maxVal));
+            document.getElementById('arrayInput').value = randomArray.join(',');
+        }
+
+        function performSort() {
+            const input = document.getElementById('arrayInput').value;
+            const method = document.getElementById('sortMethod').value;
+            const originalArray = input.split(',').map(Number).filter(n => !isNaN(n));
+            
+            if (originalArray.length === 0) {
+                alert('Введите корректные числа!');
+                return;
+            }
+
+            console.log(`=== ${getAlgorithmName(method)} ===`);
+            console.log('Исходный массив:', originalArray);
+
+            // Точное измерение времени
+            const startTime = performance.now();
+            const sortedArray = sortingMethods[method](originalArray);
+            const endTime = performance.now();
+            const executionTime = endTime - startTime;
+
+            console.log('Результат:', sortedArray);
+            console.log(`Время выполнения: ${executionTime} мс`);
+
+            const color = getAlgorithmColor(method);
+
+            const html = `
+                <div style="border: 2px solid ${color}; border-radius: 10px; padding: 15px; margin: 15px auto; max-width: 700px; background: white;">
+                    <h4 style="color: ${color}; margin: 0 0 10px 0;">${getAlgorithmName(method)}</h4>
+                    
+                    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-weight: bold; color: #923ce7;">Исходный массив:</div>
+                            <div style="font-size: 14px; font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                                [${originalArray.join(', ')}]
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-weight: bold; color: #8c27aec6;">Результат:</div>
+                            <div style="font-size: 14px; font-family: 'Courier New', monospace; background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                                [${sortedArray.join(', ')}]
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 10px; padding: 8px; background: #34495e; color: white; border-radius: 4px;">
+                        <div style="font-size: 12px;">Время выполнения:</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #f3127b;">
+                            ${executionTime.toFixed(3)} мс
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 8px; font-size: 12px; color: #7f8c8d;">
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('sortResult').innerHTML = html;
+        }
+
+        function getAlgorithmName(method) {
+            const names = {
+                'insertionSort': 'Сортировка вставками',
+                'bubbleSort': 'Пузырьковая сортировка', 
+                'selectionSort': 'Сортировка выбором',
+                'quickSort': 'Быстрая сортировка',
+                'mergeSort': 'Сортировка слиянием'
+            };
+            return names[method];
+        }
+
+        function getAlgorithmColor(method) {
+            const colors = {
+                'insertionSort': '#3498db',
+                'bubbleSort': '#2ecc71', 
+                'selectionSort': '#e67e22',
+                'quickSort': '#9b59b6',
+                'mergeSort': '#e74c3c'
+            };
+            return colors[method];
+        }
+
+        // Объект с методами сортировки
+        const sortingMethods = {
+            insertionSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало сортировки вставками');
+                for (let i = 1; i < array.length; i++) {
+                    let current = array[i];
+                    let j = i - 1;
+                    while (j >= 0 && array[j] > current) {
+                        array[j + 1] = array[j];
+                        j--;
+                    }
+                    array[j + 1] = current;
+                }
+                return array;
+            },
+
+            bubbleSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало пузырьковой сортировки');
+                for (let i = 0; i < array.length; i++) {
+                    for (let j = 0; j < array.length - i - 1; j++) {
+                        if (array[j] > array[j + 1]) {
+                            [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                        }
+                    }
+                }
+                return array;
+            },
+
+            selectionSort: function(arr) {
+                const array = [...arr];
+                console.log('Начало сортировки выбором');
+                for (let i = 0; i < array.length; i++) {
+                    let minIndex = i;
+                    for (let j = i + 1; j < array.length; j++) {
+                        if (array[j] < array[minIndex]) {
+                            minIndex = j;
+                        }
+                    }
+                    [array[i], array[minIndex]] = [array[minIndex], array[i]];
+                }
+                return array;
+            },
+
+            quickSort: function(arr) {
+                if (arr.length <= 1) return arr;
+                const pivot = arr[Math.floor(arr.length / 2)];
+                const left = arr.filter(x => x < pivot);
+                const right = arr.filter(x => x > pivot);
+                const equal = arr.filter(x => x === pivot);
+                return [...this.quickSort(left), ...equal, ...this.quickSort(right)];
+            },
+
+            mergeSort: function(arr) {
+                if (arr.length <= 1) return arr;
+                const mid = Math.floor(arr.length / 2);
+                const left = this.mergeSort(arr.slice(0, mid));
+                const right = this.mergeSort(arr.slice(mid));
+                return this.merge(left, right);
+            },
+
+            merge: function(left, right) {
+                const result = [];
+                while (left.length && right.length) {
+                    result.push(left[0] < right[0] ? left.shift() : right.shift());
+                }
+                return [...result, ...left, ...right];
+            }
+        };
+
+        // Автогенерация при загрузке
+        window.onload = generateRandomArray;
+    </code></pre>
+</section>
+</section>
+
+<section class="center">
+				<h2>МЕМЫ</h2>
+				
+			</section>
+			<section>
+					<img src="img/tobe.png"  height="600px">
+				
+			</section>
+
+
+			<section>
+					<img src="img/bubblesort.jpg"  height="600px">
+				
+			</section>
+
+		<section>
+					<img src="img/sort.jpeg"  height="600px">
+				
+			</section>
+
+		<section class="center"
+		data-menu-title="Заключительный слайд">
+			<h2>Спасибо за внимание!</h2>
+								<img src="img/end.jpg"  height="500px">
+
+		</section>
+
+
+
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+                center: false,
+				dependencies: [
+					{
+						src: `plugin/katex/katex.js`,
+						async: true,
+					},
+					{
+						src: `plugin/menu/menu.js`,
+					},
+					{
+						src: `plugin/fullscreen/fullsreen.js`,
+					},
+				],
+				menu: {
+					numbers: true,
+					markers: true,
+				},
+				slideNumber: true,
+				controls: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
