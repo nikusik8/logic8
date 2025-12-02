@@ -202,12 +202,20 @@
     
     <div style="text-align: center; margin-bottom: 20px;">
         <div style="margin: 10px 0;">
-            <button onclick="generateRandomArray()" style="padding: 8px 15px; font-size: 14px; background: #a148ce; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px;">
-                 Сгенерировать случайный массив
-            </button>
-            <input type="number" id="arraySize" placeholder="Размер" value="10" style="padding: 6px; margin: 5px; font-size: 14px; width: 80px;">
-            <input type="number" id="maxValue" placeholder="Макс. значение" value="100" style="padding: 6px; margin: 5px; font-size: 14px; width: 120px;">
-        </div>
+    <button onclick="generateRandomArray()" style="padding: 8px 15px; font-size: 14px; background: #a148ce; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px;">
+        Сгенерировать случайный массив
+    </button>
+    
+    <div style="display: inline-block; margin: 5px;">
+        <div style="font-size: 12px; margin-bottom: 2px; color: #8803fc;">Размер</div>
+        <input type="number" id="arraySize" placeholder="10" value="10" style="padding: 6px; font-size: 14px; width: 80px;">
+    </div>
+    
+    <div style="display: inline-block; margin: 5px;">
+        <div style="font-size: 12px; margin-bottom: 2px; color: #8803fc;">Макс. значение</div>
+        <input type="number" id="maxValue" placeholder="100" value="100" style="padding: 6px; font-size: 14px; width: 120px;">
+    </div>
+</div>
         
         <div style="margin: 10px 0;">
             <input type="text" id="arrayInput" placeholder="Или введите числа через запятую" 
