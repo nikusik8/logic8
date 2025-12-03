@@ -265,7 +265,10 @@
             const method = document.getElementById('sortMethod').value;
             const originalArray = input.split(',').map(Number).filter(n => !isNaN(n));
 
-            
+            if (/[a-zA-Zа-яА-Я!@#$%^&*()_+\-=\[\]{};':"\\|<>?/~`]/.test(input)) {
+        alert("Обнаружены недопустимые символы.\nМожно использовать только цифры и запятые");
+        return;
+    }
             if (originalArray.length === 0) {
                 alert('Введите корректные числа!');
                 return;
