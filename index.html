@@ -220,7 +220,6 @@
         <div style="margin: 10px 0;">
             <input type="text" id="arrayInput" placeholder="Или введите числа через запятую" 
                    style="padding: 8px; margin: 5px; font-size: 14px; width: 300px;"
-                   value="64,34,25,12,22,11,90,5,77,30">
         </div>
         
         <div style="margin: 10px 0;">
@@ -265,6 +264,7 @@
             const input = document.getElementById('arrayInput').value;
             const method = document.getElementById('sortMethod').value;
             const originalArray = input.split(',').map(Number).filter(n => !isNaN(n));
+
             
             if (originalArray.length === 0) {
                 alert('Введите корректные числа!');
