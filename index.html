@@ -242,11 +242,24 @@
 
     <script>
         function generateRandomArray() {
-            const size = parseInt(document.getElementById('arraySize').value) || 10;
-            const maxVal = parseInt(document.getElementById('maxValue').value) || 100;
-            const randomArray = Array.from({length: size}, () => Math.floor(Math.random() * maxVal));
-            document.getElementById('arrayInput').value = randomArray.join(',');
-        }
+    const size = parseInt(document.getElementById('arraySize').value);
+    const maxVal = parseInt(document.getElementById('maxValue').value);
+    
+    if (size < 1) { 
+        alert("Размер массива не должен быть равен нулю");
+        return;
+}
+    
+    if (maxVal < 0) { 
+        alert("В массиве могут быть только положительные числа");
+        return;
+    }
+    
+    const randomArray = Array.from({length: size}, () => Math.floor(Math.random() * (maxVal + 1)));
+    document.getElementById('arrayInput').value = randomArray.join(',');
+}
+
+         
 
         function performSort() {
             const input = document.getElementById('arrayInput').value;
